@@ -1,0 +1,1117 @@
+﻿<html>
+<head>
+<title>당근이의 모험</title>
+<script type="text/javascript" src="jsp\image.js"></script>
+<script type="text/javascript" src="jsp\audio.js"></script>
+<script type="text/javascript">
+
+var ctx;
+var tm;
+var box={
+    width:1300,
+    height:700,
+    x:20,
+    y:20,
+};
+var carrot={
+    x:10,
+    y:530,
+    width:100,
+    height:100,
+    vx:0,
+    vy:0,
+    friction:0.9,
+    gravity:0.3,
+    direction:'R',
+    state:'stop',
+    condition:'L',
+};
+var sun={
+    x:1180,
+    y:30,
+    width:130,
+    height:100,
+    vx:-2,
+}
+var tangerine={
+    x:800,
+    y:510,
+    width:100,
+    height:130,
+    vx:0,
+    vx1:-6,
+}
+var dustcloud={
+    x:20,
+    y:70,
+    width:180,
+    height:130,
+    move:false,
+    vx:0,
+    vx1:2,
+}
+var bumblebee={
+    bumblebee1x:1000,
+    bumblebee1y:300,
+    bumblebee2x:1200,
+    bumblebee2y:100,
+    width:100,
+    height:100,
+    vy1:6,
+    vy2:3
+}
+var strawberry={
+    x1:1100,
+    y1:100,
+    x2:500,
+    y2:500,
+    x3:700,
+    y3:200,
+    x5:20,
+    y5:50,
+
+
+    width:115,
+    height:150,
+    vx:0,
+    vy:0,
+    move:false,
+    vx1:0.2,
+    vy1:0.3,
+    vx2:0.5,
+    vy2:0.5,
+    vx3:2,
+    vy3:3,
+    vx5:0.3,
+    vy5:0.3,
+}
+var count=0;
+var tcount=0;
+var stagelevel=1;
+var groundy;
+var bamstate=0;
+
+var brick=new Image();
+brick.src="brick.png";
+var dbrick=new Image();
+dbrick.src="dbrick.png";
+var bbrick=new Image();
+bbrick.src="bbrick.png";
+var happysun=new Image();
+happysun.src="happysun.png";
+var clouds=new Image();
+clouds.src="clouds.png";
+var cactus=new Image();
+cactus.src="cactus.png";
+var carrotdie=new Image();
+carrotdie.src="carrotdie.png";
+var qbrick=new Image();
+qbrick.src="qbrick.png";
+var arrow=new Image();
+arrow.src="arrow.png";
+var dground=new Image();
+dground.src="dground.png";
+
+var stageback2=new Image();
+stageback2.src="stageback2.png";
+var tangerine1=new Image();
+tangerine1.src="tangerine1.png";
+var tangerine2=new Image();
+tangerine2.src="tangerine2.png";
+var tangerine3=new Image();
+tangerine3.src="tangerine3.png";
+var tangerine4=new Image();
+tangerine4.src="tangerine4.png";
+var tangerine5=new Image();
+tangerine5.src="tangerine5.png";
+var dustcloud1=new Image();
+dustcloud1.src="dustcloud.png";
+var pesticide=new Image();
+pesticide.src="pesticide.png";
+var bumblebee1=new Image();
+bumblebee1.src="bumblebee.png";
+var blankbrick=new Image();
+blankbrick.src="blankbrick.png";
+var bam=new Image();
+bam.src="bam.png";
+
+var stageback33=new Image();
+stageback33.src="stageback33.png";
+var berry1=new Image();
+berry1.src="berry1.png";
+var berry2=new Image();
+berry2.src="berry2.png";
+var berry3=new Image();
+berry3.src="berry3.png";
+var berry4=new Image();
+berry4.src="berry4.png";
+var berry5=new Image();
+berry5.src="berry5.png";
+
+var dragonNest=new Audio();
+dragonNest.src="DragonNest.mp3";
+dragonNest.controls=false;
+dragonNest.autoplay=false;
+dragonNest.loop=true;
+
+var zzz=new Image();
+zzz.src="zzz.png";
+var mark=new Image();
+mark.src="!.png";
+var arr=new Image();
+arr.src="arr.png";
+var omg=new Image();
+omg.src="omg.png";
+
+var brickstate=1;
+var brick1=0;
+var brick2=0;
+var brick3=0;
+var brick4=0;
+var brick5=0;
+var brick6=0;
+var qbrick1=0;
+var bbrickstate=0;
+
+
+var cactusstate=0;
+var dgroundy=600;
+var tangerinestate=0;
+var pesticidestate=0;
+var pesticidestate1=0;
+var countlife=0;
+var dustcloudcnt=0;
+function init()
+{
+    ctx=document.getElementById('canvas').getContext('2d');
+    tm=setInterval(draw_init,10);
+}
+function drawcarrot()
+{
+    if(carrot.condition=='L')
+    {
+        if(carrot.direction=='R'&& carrot.state=='stop')
+        {
+            ctx.drawImage(carrot_R1, carrot.x, carrot.y, carrot.width, carrot.height);
+        }
+        if(carrot.direction=='R'&& carrot.state=='start')
+        {
+            if(count%3==0)
+                ctx.drawImage(carrot_R2, carrot.x, carrot.y, carrot.width, carrot.height);
+            if(count%3==1)
+                ctx.drawImage(carrot_R3, carrot.x, carrot.y, carrot.width, carrot.height);
+            if(count%3==2)
+                ctx.drawImage(carrot_R4, carrot.x, carrot.y, carrot.width, carrot.height);
+        }
+
+        if(carrot.direction=='L'&& carrot.state=='stop')
+            ctx.drawImage(carrot_L1, carrot.x, carrot.y, carrot.width, carrot.height);
+        if(carrot.direction=='L'&& carrot.state=='start')
+        {
+            if(count%3==0)
+                ctx.drawImage(carrot_L2, carrot.x, carrot.y, carrot.width, carrot.height);
+            if(count%3==1)
+                ctx.drawImage(carrot_L3, carrot.x, carrot.y, carrot.width, carrot.height);
+            if(count%3==2)
+                ctx.drawImage(carrot_L4, carrot.x, carrot.y, carrot.width, carrot.height);
+        }
+        if(pesticidestate==1 || pesticidestate1==2)
+            drawomg();
+        if(bamstate==1)
+            drawbam();
+
+
+    }
+    if(carrot.condition=='D')
+    {
+        die.play();
+        setInterval(diecarrot, 10);
+    }
+
+}
+function drawtangerine()
+{
+    if(tangerinestate==0)
+    {
+        ctx.drawImage(tangerine1, tangerine.x, tangerine.y, tangerine.width, tangerine.height);
+        setTimeout(drawzzz, 1);
+    }
+    if(tangerinestate==1)
+    {
+        ctx.drawImage(tangerine2, tangerine.x, tangerine.y, tangerine.width, tangerine.height);
+        drawmark();
+    }
+    if(tangerinestate==2)
+    {
+            if(tcount>2)
+                tcount=0;
+            else
+                tcount++;
+
+            if(tcount%3==0)
+            {
+                ctx.drawImage(tangerine3, tangerine.x, tangerine.y, tangerine.width, tangerine.height);
+                drawarr();
+            }
+            if(tcount%3==1)
+            {
+                ctx.drawImage(tangerine4, tangerine.x, tangerine.y, tangerine.width, tangerine.height);
+                drawarr();
+            }
+            if(tcount%3==2)
+            {
+                ctx.drawImage(tangerine5, tangerine.x, tangerine.y, tangerine.width, tangerine.height);
+                drawarr();
+            }
+    }
+}
+function drawberry()
+{
+    ctx.drawImage(berry1, strawberry.x1, strawberry.y1, strawberry.width, strawberry.height);
+    ctx.drawImage(berry2, strawberry.x2, strawberry.y2, strawberry.width, strawberry.height);
+    ctx.drawImage(berry3, strawberry.x3, strawberry.y3, strawberry.width, strawberry.height);
+    ctx.drawImage(berry5, strawberry.x5, strawberry.y5, strawberry.width, strawberry.height);
+
+}
+function drawdustcloud()
+{
+    ctx.drawImage(dustcloud1, dustcloud.x, dustcloud.y, dustcloud.width, dustcloud.height);
+}
+function drawzzz()
+{
+    ctx.drawImage(zzz, 800, 440, 100, 100);
+}
+function drawmark()
+{
+    ctx.drawImage(mark, tangerine.x, tangerine.y-100, 100, 100);
+}
+function drawarr()
+{
+    ctx.drawImage(arr, tangerine.x, tangerine.y-70, 100, 100);
+}
+function drawpesticide()
+{
+    ctx.drawImage(pesticide, 430, 270, 80, 80);
+}
+function drawpesticide1()
+{
+    ctx.drawImage(pesticide, 680, 70, 80, 80);
+}
+function drawomg()
+{
+    ctx.drawImage(omg, carrot.x, carrot.y-100, 100,100);
+}
+function drawbam()
+{
+    ctx.drawImage(bam, carrot.x+100, carrot.y, 100,100);
+}
+function drawbumblebee()
+{
+    ctx.drawImage(bumblebee1, bumblebee.bumblebee1x, bumblebee.bumblebee1y, bumblebee.width, bumblebee.height);
+    ctx.drawImage(bumblebee1, bumblebee.bumblebee2x, bumblebee.bumblebee2y, bumblebee.width, bumblebee.height);
+}
+function diecarrot()
+{
+    if(stagelevel==1)
+    {
+        ctx.clearRect(0, 0, box.width, box.height);
+        drawstage1();
+        ctx.drawImage(carrotdie, carrot.x, carrot.y, carrot.width, carrot.height);
+        diemove();
+    }    
+    if(stagelevel==2)
+    {
+        ctx.clearRect(0, 0, box.width, box.height);
+        drawstage2();
+        ctx.drawImage(carrotdie, carrot.x, carrot.y, carrot.width, carrot.height);
+        diemove();
+    }
+    if(stagelevel==3)
+    {
+        ctx.clearRect(0, 0, box.width, box.height);
+        drawstage3();
+        ctx.drawImage(carrotdie, carrot.x, carrot.y, carrot.width, carrot.height);
+        diemove();
+    }
+    
+}
+function bricks(x, y)
+{
+    ctx.drawImage(brick, x, y, 50, 50);
+}
+function qbricks(x, y)
+{
+    ctx.drawImage(qbrick, x, y, 50, 50);
+}
+function dbricks(x,y)
+{
+    ctx.drawImage(dbrick, x, y, 50, 50);
+}
+function bbricks(x,y)
+{
+    ctx.drawImage(bbrick, x, y, 50, 50);
+}
+function blankbricks(x,y)
+{
+    ctx.drawImage(blankbrick, x, y, 60, 60);
+}
+function drawstage1()
+{
+    ctx.clearRect(0, 0, box.width, box.height);
+    ctx.drawImage(stageback1, 0, 0, 1320, 700);
+    ctx.drawImage(clouds, 100,20, 230, 180);
+    ctx.drawImage(clouds, 600,10, 230, 180);
+    ctx.drawImage(clouds, 1000,60, 230, 180);
+    ctx.drawImage(happysun, sun.x, sun.y, sun.width, sun.height);
+    ctx.drawImage(arrow, 1200, 530, 100,100);
+    qbricks(330,350);
+    if(brick1==1)
+        bricks(380,350);
+    if(brick2==1)
+        bricks(430,350);
+    if(brick3==1)
+        bricks(480,350);
+
+    bricks(610, 200);
+    bricks(660, 200);
+    if(brickstate==1)
+        bricks(880, 200);
+
+    bricks(930, 200);
+    ctx.drawImage(cactus, 640, 530,100, 100);
+    
+    ctx.drawImage(cactus, 880, 530,100, 100);
+    ctx.drawImage(cactus, 930, 530,100, 100);
+    ctx.drawImage(dground, 1100, dgroundy,110, 100);
+    if(cactusstate==1)
+    {
+        //ctx.drawImage(cactus, 850, 530,100, 100);
+        ctx.drawImage(cactus, 880, 530,100, 100);
+    }
+}
+function drawstage2()
+{
+    sun.x=1180;
+    sun.y=30;
+    ctx.clearRect(0, 0, box.width, box.height);
+    ctx.drawImage(stageback2, 0, 0, 1300, 700);
+    ctx.drawImage(grass, 0, 580, 200,50);
+    ctx.drawImage(grass, 200, 580, 200,50);
+    ctx.drawImage(grass, 400, 580, 200,50);
+    ctx.drawImage(grass, 600, 580, 200,50);
+    ctx.drawImage(grass, 800, 580, 200,50);
+    ctx.drawImage(grass, 1000, 580, 200,50);
+    ctx.drawImage(grass, 1200, 580, 200,50);
+    ctx.drawImage(happysun, sun.x, sun.y, sun.width, sun.height);
+    ctx.drawImage(arrow, 1200, 530, 100,100);
+    blankbricks(690,390);
+    blankbricks(740,390);
+    blankbricks(790,390);
+    blankbricks(840,390);
+    blankbricks(890,390);
+    if(pesticidestate==0)
+        drawpesticide();
+    if(pesticidestate1==1)
+        drawpesticide1();
+    qbricks(450,350);
+    if(qbrick1==1)
+        qbricks(650,350);
+    if(brick4==1)
+    {
+        bricks(700,400);
+        bricks(750,400);
+        bricks(800,400);
+        bricks(850,400);
+        bricks(900,400);
+    }
+    if(brick5==1)
+    {
+        bricks(950,350);
+        bricks(950,300);
+        bricks(950,250);
+        bricks(950,200);
+        bricks(950,150);
+    }
+
+    if(brick6==1)
+    {
+        if(bbrickstate<3)
+            dbricks(800,150);
+        if(bbrickstate>3)
+            bbricks(800,150);
+        if(bbrickstate>200)
+            qbricks(800,150);
+
+        bricks(700,150);
+        bricks(750,150);
+        bricks(850,150);
+        bricks(900,150);
+    }
+    drawtangerine();
+    drawdustcloud();
+    drawbumblebee();
+}
+function drawstage3()
+{
+    ctx.clearRect(0, 0, box.width, box.height);
+    ctx.drawImage(stageback33, 0, 0, 1300, 700);
+    ctx.drawImage(grass, 0, 600, 200,50);
+    ctx.drawImage(grass, 200, 600, 200,50);
+    ctx.drawImage(grass, 400, 600, 200,50);
+    ctx.drawImage(grass, 600, 600, 200,50);
+    ctx.drawImage(grass, 800, 600, 200,50);
+    ctx.drawImage(grass, 1000, 600, 200,50);
+    ctx.drawImage(grass, 1200, 600, 200,50);
+    ctx.drawImage(happysun, sun.x, sun.y, sun.width, sun.height);
+    ctx.drawImage(arrow, 1200, 530, 100,100);
+
+    bricks(330,350);
+        bricks(380,350);
+        bricks(430,350);
+        bricks(480,350);
+
+    bricks(610, 200);
+    bricks(660, 200);
+
+    drawberry();
+}
+
+function draw_init()
+{
+    if(stagelevel==1)
+    {
+            update();
+        drawstage1();
+        drawcarrot();
+    }
+    if(stagelevel==2)
+    {
+            update();
+        drawstage2();
+        drawcarrot();
+    }
+    if(stagelevel==3)
+    {
+        bgm.pause();
+        dragonNest.play();
+        dragonNest.autoplay=true;
+            update();
+        drawstage3();
+        drawcarrot();
+    }
+    if(stagelevel==4)
+    {
+        location.href="../Summer/Summer.html";
+    }
+}
+function keyboardInput()
+{
+    window.addEventListener('keydown', getkeydown, false);
+    window.addEventListener('keyup', getkeyup, false);
+}
+function diemove()
+{
+    carrot.vy=-2 ;
+    carrot.vy+=carrot.gravity;
+    carrot.y+=carrot.vy;
+}
+function update()
+{
+        carrot.vy +=carrot.gravity;
+        carrot.y +=carrot.vy;
+        carrot.x+=carrot.vx;
+    
+        if(carrot.x<20)
+        {
+            carrot.x=20;
+            stagestart.play();
+        }
+        if(carrot.x>1250)
+        {
+            stagelevel++;
+            carrot.x=20;
+
+            exit.play();
+        }
+    if(stagelevel==1)
+    {
+        if(carrot.x>1050 &&carrot.x<1150 && carrot.y>530)
+        {
+            //carrot.x=1150;
+            onGround=false;
+            dgroundy+=3;
+            if(carrot.y>700)
+            {
+               carrot.condition='D';
+               clearInterval(tm);
+            }
+        }
+        else if(carrot.y>530)
+        {
+            carrot.y=530;
+            carrot.vy=0;
+            onGround=true;
+        }
+        sun.x+=sun.vx;
+        if(sun.x<20)
+        {
+            sun.x=20;
+            sun.vx*=-1;
+        }
+        if(sun.x>1180)
+        {
+            sun.x=1180;
+            sun.vx*=-1;
+        }
+        if(carrot.x+80>sun.x && carrot.x<sun.x+100  && carrot.y<sun.y+80)
+        {
+                carrot.condition='D';
+               clearInterval(tm);
+        }
+        if(carrot.x>250 && carrot.x<510)  //첫번째 블록
+        {
+            if(carrot.y>-100 && carrot.y<350)
+            {
+                if(carrot.y>250)
+                {
+                    carrot.y=250;
+                    carrot.vy=0;
+                    onGround=true;
+                }
+                if(carrot.y<-50)
+                {
+                    carrot.y=-50;
+                    onGround=false;
+                }
+            }
+            else if(carrot.y<400)
+            {
+                if(carrot.x>250 && carrot.x<350)
+                {
+                    mblock.play();
+                    brick1=1;
+                    brick2=1;
+                    brick3=1;
+                }
+                carrot.y=400;
+                onGround=false;
+            }
+        }
+
+        if(carrot.x>530 && carrot.x<660)    //두번째
+        {
+            if(carrot.x>480 && carrot.x<680 && carrot.y>430)
+            {
+               carrot.condition='D';
+               clearInterval(tm);
+            }
+            sun.vx=-5.5;
+            if(carrot.y>0 && carrot.y<200)
+            {
+                if(carrot.y>100)
+                {
+                    carrot.y=100;
+                    carrot.vy=0;
+                    onGround=true;
+                }
+            }
+        }
+        if(carrot.x>790 && carrot.y>0)      //세번째
+        {
+            if(carrot.x>800)
+                brickstate=0;
+            if(carrot.x>880-100&&carrot.x<980 && carrot.y>530-100)
+            {
+               cactusstate=1;
+               carrot.condition='D';
+               clearInterval(tm);
+            }
+        }
+        if(carrot.x>850 && carrot.x<930)
+        {
+            if(carrot.y>0 && carrot.y<200)
+            {
+                if(carrot.y>100)
+                {
+                    carrot.y=100;
+                    carrot.vy=0;
+                    onGround=true;
+                }
+            }
+        }
+    }
+    if(stagelevel==2)
+    {
+        if(pesticidestate==1 || pesticidestate1==2)
+        {
+            countlife++;
+            if(countlife==200)
+            {
+               carrot.condition='D';
+               clearInterval(tm);
+            }
+        }
+        if(dustcloud.move=='false');
+        {
+            dustcloud.x+=dustcloud.vx;
+        }
+        if(dustcloud.move=='true')
+        {
+            bamstate=1;
+                    if(carrot.x>1000 && carrot.y>100)
+                        bamstate=0;
+            dustcloud.x+=dustcloud.vx1;
+            if(dustcloud.x+100>carrot.x && dustcloud.x<carrot.x)
+            {
+                if(carrot.y=dustcloud.y-50)
+                {
+                    dustcloudcnt++;
+                }
+                
+                if(dustcloudcnt==0)
+                {
+                    carrot.x=(dustcloud.x+carrot.vx);
+                    carrot.y=dustcloud.y-50+carrot.vy;
+                    onGround=true;
+                }
+                
+            }
+        }
+        if(carrot.x+70>sun.x && carrot.y<sun.y+sun.height)
+        {
+                carrot.condition='D';
+               clearInterval(tm);
+        }
+        
+        bumblebee.bumblebee1y+=bumblebee.vy1;
+        if(bumblebee.bumblebee1y>530)
+        {
+            bumblebee.bumblebee1y=530;
+            bumblebee.vy1*=-1;
+        }
+        if(bumblebee.bumblebee1y<150)
+        {
+            bumblebee.bumblebee1y=150;
+            bumblebee.vy1*=-1;
+        }
+        bumblebee.bumblebee2y+=bumblebee.vy2;
+        if(bumblebee.bumblebee2y>530)
+        {
+            bumblebee.bumblebee2y=530;
+            bumblebee.vy2*=-1;
+        }
+        if(bumblebee.bumblebee2y<100)
+        {
+            bumblebee.bumblebee2y=100;
+            bumblebee.vy2*=-1;
+        }
+        if(carrot.x+60>bumblebee.bumblebee1x && carrot.x<bumblebee.bumblebee1x+60 && carrot.y+80>bumblebee.bumblebee1y && carrot.y<bumblebee.bumblebee1y+100)
+        {
+               carrot.condition='D';
+               clearInterval(tm);
+        }
+        if(carrot.x+60>bumblebee.bumblebee2x && carrot.x<bumblebee.bumblebee2x+60 && carrot.y+80>bumblebee.bumblebee2y && carrot.y<bumblebee.bumblebee2y+100)
+        {
+               carrot.condition='D';
+               clearInterval(tm);
+        }
+        tangerine.x+=tangerine.vx;
+
+        if(carrot.y>530)
+        {
+            carrot.y=530;
+            carrot.vy=0;
+            onGround=true;
+        }
+        if(carrot.x>tangerine.x-600 && tangerinestate==0)
+        {
+            tangerinestate=1;
+        }
+        if(tangerinestate==1 || tangerinestate==2)
+        {
+                argh.play();
+
+            if(tangerinestate==1)
+            {
+                if(carrot.x>tangerine.x-500)
+                {
+                    tangerinestate=2;
+                }
+            }
+            if(tangerinestate==2)
+            {
+                    tangerine.x+=tangerine.vx1;
+                    if(tangerine.x<300)
+                    {
+                        tangerine.x=300;
+                        tangerine.vx1*=-1;
+                    }
+                    if(tangerine.x>1000)
+                    {
+                        tangerine.x=1000;
+                        tangerine.vx1*=-1;
+                    }
+            }
+        
+        }
+        if(carrot.x+80>tangerine.x && carrot.x<tangerine.x+100 && carrot.y>430)
+        {
+                carrot.condition='D';
+               clearInterval(tm);
+        }
+        if(carrot.x>850)
+            tangerinestate=2;
+        if(carrot.x>370 && carrot.x<470)  //첫번째 블록
+        {
+            if(carrot.y>-100 && carrot.y<350)
+            {
+                if(carrot.y>250)
+                {
+                    powerdown.play();
+                    pesticidestate=1;
+                    carrot.y=250;
+                    carrot.vy=0;
+                    onGround=true;
+                }
+                if(carrot.y<-50)
+                {
+                    carrot.y=-50;
+                    onGround=false;
+                }
+            }
+            else if(carrot.y<400)
+            {
+                if(carrot.x>370 && carrot.x<470)
+                {
+                    mblock.play();
+                    tangerine.vx1=0;
+                    qbrick1=1;
+                }
+                carrot.y=400
+                onGround=false;
+            }
+
+        }
+        if(carrot.x>570 && carrot.x<670)  //두번째 블록
+        {
+            if(carrot.y>-500 && carrot.y<350)
+            {
+                if(carrot.y>250)
+                {
+                    carrot.y=250;
+                    carrot.vy=0;
+                    onGround=true;
+                    brick4=1;
+                }
+                if(carrot.y<-450)
+                {
+                    carrot.y=-450;
+                    onGround=false;
+                }
+            }
+            else if(carrot.y<400)
+            {
+                if(carrot.x>570 && carrot.x<670)
+                {
+                    mblock.play();
+                    tangerine.vx1=-6;
+                    qbrick1=1;
+                }
+                carrot.y=400
+                onGround=false;
+            }
+        }
+        if(carrot.x>650 && carrot.x<1000)  //세번째 블록
+        {
+            if(carrot.y>-500 && carrot.y<400)
+            {
+                if(carrot.x==800)
+                    brick5=1; 
+                if(carrot.y>300)
+                {
+                    carrot.y=300;
+                    carrot.vy=0;
+                    onGround=true;      
+                    if(carrot.x>850)
+                    {
+                        carrot.x=850;          
+
+                    }
+                }
+                if(carrot.y<-450)
+                {
+                    carrot.y=-450;
+                    onGround=false;
+                }
+            }
+            else if(carrot.y<450)
+            {
+                if(carrot.x>600 && carrot.x<1000)
+                {
+                    //appear.play();
+                    brick4=1;
+                }
+                carrot.y=450;
+                onGround=false;
+            }
+        }
+        if(carrot.x>630 && carrot.x<950)  //네번째 블록
+        {
+            if(carrot.y>-300 && carrot.y<150)
+            {
+                if(carrot.y>50)
+                {
+                    carrot.y=50;
+                    carrot.vy=0;
+                    onGround=true;                    
+                }
+                if(carrot.y<-250)
+                {
+                    carrot.y=-250;
+                    onGround=false;
+                }
+            }
+            else if(carrot.y<200)
+            {
+                brick6=1;
+                pesticidestate1=1;
+                carrot.y=200
+                onGround=false;
+                if(carrot.x>770 && carrot.x<840)
+                {
+                    if(carrot.y==200)
+                    {
+
+                        bbrickstate++;
+                        if(bbrickstate>200)
+                        {
+                            mblock.play();
+                            dustcloud.move='true';
+                        }
+                        if(bbrickstate<200)
+                            breakblock.play();
+                    }   
+                }
+            }
+            if(carrot.x>620 && carrot.x<750 && carrot.y<70)
+            {
+                pesticidestate1=2;
+                powerdown.play();
+            }
+        }
+        if(carrot.x>880 && carrot.x<950)  //네번째 블록
+        {
+            brick5=1;
+            if(carrot.y>-100 && carrot.y<200)
+            {
+                if(carrot.y>50)
+                {
+                    carrot.y=50;
+                    carrot.vy=0;
+                    onGround=true;
+                }
+                if(carrot.y<-50)
+                {
+                    carrot.y=-50;
+                    onGround=false;
+                }
+            }
+            else if(carrot.y<400)
+            {
+                carrot.y=400
+                onGround=false;
+            }
+        }
+    }
+    if(stagelevel==3)
+    {
+        if(carrot.y>530)
+        {
+            carrot.y=530;
+            carrot.vy=0;
+            onGround=true;
+        }
+        if(carrot.x+70>strawberry.x1 && carrot.x<strawberry.x1+100 && carrot.y<strawberry.y1+130 && carrot.y+70>strawberry.y1) //berry1
+        {
+               carrot.condition='D';
+               clearInterval(tm);
+        }
+        if(carrot.x<strawberry.x1)
+        {
+            strawberry.x1+=(strawberry.vx1*-1);
+        }
+        else
+        {
+            strawberry.x1+=strawberry.vx1;
+        }
+        if(carrot.y>strawberry.y1)
+        {
+            strawberry.y1+=strawberry.vy1;
+        }
+        else
+        {
+            strawberry.y1+=(strawberry.vy1*-1);
+        }
+
+        if(carrot.x+70>strawberry.x2 && carrot.x<strawberry.x2+100 && carrot.y<strawberry.y2+130 && carrot.y+70>strawberry.y2) //berry2
+        {
+               carrot.condition='D';
+               clearInterval(tm);
+        }
+        if(carrot.x<strawberry.x2)
+        {
+            strawberry.x2+=(strawberry.vx2*-1);
+        }
+        else
+        {
+            strawberry.x2+=strawberry.vx2;
+        }
+        if(carrot.y>strawberry.y2)
+        {
+            strawberry.y2+=strawberry.vy2;
+        }
+        else
+        {
+            strawberry.y2+=(strawberry.vy2*-1);
+        }
+
+        if(carrot.x+70>strawberry.x3 && carrot.x<strawberry.x3+100 && carrot.y<strawberry.y3+130 && carrot.y+70>strawberry.y3) //berry3
+        {
+               carrot.condition='D';
+               clearInterval(tm);
+        }
+        strawberry.x3+=strawberry.vx3;
+        strawberry.y3+=strawberry.vy3;
+        if(strawberry.y3>500)
+            strawberry.vy3*=-1
+        if(strawberry.y3<100)
+            strawberry.vy3*=-1;
+        if(strawberry.x3>830)
+            strawberry.vx3*=-1;
+        if(strawberry.x3<700)
+            strawberry.vx3*=-1;
+
+
+
+
+
+
+        if(carrot.x+70>strawberry.x5 && carrot.x<strawberry.x5+100 && carrot.y<strawberry.y5+130 && carrot.y+70>strawberry.y5) //berry5
+        {
+               carrot.condition='D';
+               clearInterval(tm);
+        }
+        if(carrot.x<strawberry.x5)
+        {
+            strawberry.x5+=(strawberry.vx5*-1);
+        }
+        else
+        {
+            strawberry.x5+=strawberry.vx5;
+        }
+        if(carrot.y>strawberry.y5)
+        {
+            strawberry.y5+=strawberry.vy5;
+        }
+        else
+        {
+            strawberry.y5+=(strawberry.vy5*-1);
+        }
+
+        if(carrot.x>250 && carrot.x<510)  //첫번째 블록
+        {
+            if(carrot.y>-100 && carrot.y<350)
+            {
+                if(carrot.y>250)
+                {
+                    carrot.y=250;
+                    carrot.vy=0;
+                    onGround=true;
+                }
+                if(carrot.y<-50)
+                {
+                    carrot.y=-50;
+                    onGround=false;
+                }
+            }
+            else if(carrot.y<400)
+            {
+                carrot.y=400;
+                onGround=false;
+            }
+        }
+        if(carrot.x>530 && carrot.x<660)    //두번째
+        {
+            if(carrot.y>0 && carrot.y<200)
+            {
+                if(carrot.y>100)
+                {
+                    carrot.y=100;
+                    carrot.vy=0;
+                    onGround=true;
+                }
+            }
+        }
+
+    }
+}
+function getkeydown(event)
+{
+    if(event.keyCode==32)
+    {
+        jump.play();
+        if(onGround)
+        {
+            carrot.vy=-13.5;
+            onGround=false;
+        }
+    }
+    if(event.keyCode==37)
+    {
+        carrot.state='start'
+        carrot.direction='L';
+        carrot.vx=-2;
+        if(count>2)
+            count=0;
+        else
+            count++;
+    }
+    if(event.keyCode==39)
+    {
+        carrot.state='start'
+        carrot.direction='R';
+        carrot.vx=2;
+        if(count>2)
+            count=0;
+        else
+            count++;
+
+    }
+}
+function getkeyup(event)
+{
+    if(event.keyCode==32)
+    {
+        if(carrot.vy<-6)
+            carrot.vy=-6;
+    }
+    if(event.keyCode==37)
+    {
+        carrot.state='stop'
+        carrot.direction='L';
+        carrot.vx=0;
+    }
+    if(event.keyCode==39)
+    {
+        carrot.state='stop'
+        carrot.direction='R';
+        carrot.vx=0;
+    }
+}
+</script>
+</head>
+<body onLoad="init(); keyboardInput();">
+<canvas id="canvas" width="1300" height="650" style="border:solid">
+</canvas>
+</body>
+</html>

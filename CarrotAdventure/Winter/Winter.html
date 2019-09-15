@@ -1,0 +1,953 @@
+﻿<html>
+    <meta charset="utf-8">
+<head>
+<title>당근이의 모험</title>
+<style>
+</style>
+<script type="text/javascript">
+    
+var stage=1;    
+var gameplay;
+var onGround=false;
+var carrot_fall=false;
+var groundheight=300;
+var ctx;
+var box={
+    width:1300,
+    height:600,
+    x:20,
+    y:20,
+};
+var carrot={
+    x:20,
+    y:300,
+    width:150,
+    height:150,
+    vx:0,
+    vy:0,
+    gravity:0.5,
+    direction:'R',
+};
+
+//Images
+//stage1
+var carrot_R=new Image();
+carrot_R.src="carrot_R.png";
+var carrot_L=new Image();
+carrot_L.src="carrot_L.png";
+var ground=new Image();
+ground.src="ground.png";
+var seaground=new Image();
+seaground.src="seaground.png";
+var background1=new Image();
+background1.src="winter1.png";
+var bricks=new Image();
+bricks.src="bricks.png";
+var luckybox=new Image();
+luckybox.src="luckybox.png";
+var carrot_die=new Image();
+carrot_die.src="carrot_die.png";
+var enemy=new Image();
+enemy.src="enemy.png";
+var suk=new Image();
+suk.src="suk.png";
+var cloud=new Image();
+cloud.src="cloud.png";
+var cloud2=new Image();
+cloud2.src="cloud2.png";
+var cloud_die=new Image();
+cloud_die.src="cloud_die.png";
+var flag = Image();
+flag.src = "flag.png";
+var bridge = Image();
+bridge.src = "bridge.png";  
+//stage2
+var background2=new Image();
+background2.src="winter2.png";
+var fireball=new Image();
+fireball.src="fireball.png";
+var flag2=new Image();
+flag2.src="flag2.png";
+
+var goldbox=new Image();
+goldbox.src="goldbox.png";
+var hanra=new Image();
+hanra.src="hanra.png";
+
+//stage3
+var ground2=new Image();
+ground2.src="ground2.png";
+var background3=new Image();
+background3.src="winter3.jpg";
+var background4=new Image();
+background4.src="winter4.png";
+var black=new Image();
+black.src="black.png";
+//stage4
+var ground3=new Image();
+ground3.src="ground3.png";
+var background5=new Image();
+background5.src="winter5.jpg";
+var watermelon=new Image();
+watermelon.src="water.png";
+//Sounds
+var bgm = new Audio();
+bgm.src = "winter1.m4a";
+bgm.controls = false;
+bgm.autoplay = true;
+bgm.loop = true;
+var bgm2 = new Audio();
+bgm2.src = "YS.m4a";
+var bgm3 = new Audio();
+bgm3.src = "Message Block.mp3";
+var fallen = new Audio();
+fallen.src = "fallen.mp3";
+fallen.controls = false;
+fallen.autoplay = false;
+fallen.loop = false;
+var jump = new Audio();
+jump.src = "jump.mp3";
+var die = new Audio();
+die.src = "die.mp3";
+
+var enemyx=700;
+var enemyy=250;
+var enemywidth=150;
+var enemyheight=150;
+var enemyvx=4;
+var enemyvy=10;
+var enemydirection=1;
+
+var suk1x=100;
+var suk1y=350;
+var suk1width=75;
+var suk1height=75;
+var suk1vx=4;
+var suk1vy=10;
+var suk1direction=1;
+
+var suk2x=600;
+var suk2y=350;
+var suk2width=75;
+var suk2height=75;
+var suk2vx=4;
+var suk2vy=4;
+var suk2direction=1;
+var suksize=0;
+var suk2direction2=1;
+    
+var fireballx=500;
+var firebally=450;
+var fireballwidth=75;
+var fireballheight=75;
+var fireballvx=0;
+var fireballvy=10;
+var fireballdirection=1;
+
+var fire1x=1060;
+var fire1y=350;
+var fire1width=40;
+var fire1height=40;
+var fire1vx=0;
+var fire1vy=10;
+var fire1direction=1;
+var fire1fallen=0;
+
+var fire2x=1060;
+var fire2y=350;
+var fire2width=40;
+var fire2height=40;
+var fire2vx=0;
+var fire2vy=10;
+var fire21irection=1;
+var fire2fallen=0;
+    
+var brickx;
+var bricky;
+var brickwidth=150;
+var brickheight=50;
+var brickhide=0;
+
+var cloudx=150;
+var cloudy=50;
+var cloudwidth=130;
+var cloudheight=100;
+var cloudvx=1;
+var cloudvy=7;
+var clouddirection=1;
+var cloudfall=0;
+    
+var cloud2x=700;
+var cloud2y=50;
+var cloud2width=400;
+var cloud2height=100;
+var cloud2vx=1;
+var cloud2vy=4;
+var cloud2direction=1;
+
+var flagx = 1200;
+var flagy = 310;
+var flagwidth = 100;
+var flagheight = 100;
+
+var hairtalex=1000;
+var hairtaley=250;
+var hairtalewidth=150;
+var hairtaleheight=50;
+
+var watermelonx=700;
+var watermelony=200;
+var watermelonwidth=200;
+var watermelonheight=200;
+var watermelonvx=4;
+var watermelonvy=10;
+var watermelondirection=1;    
+    
+var hanrax=500;
+var hanray=-200;
+var hanravx=10;
+var hanravy=1;
+var hanrawidth=170;
+var hanraheight=150;
+var hanradirection=1;
+var hanramove=0;
+
+var hanra2x=1000;
+var hanra2y=-200;
+var hanra2vx=10;
+var hanra2vy=5;
+var hanra2width=170;
+var hanra2height=150;
+var hanra2direction=1;
+var hanra2move=0;
+
+var hanra3x=100;
+var hanra3y=-200;
+var hanra3vx=10;
+var hanra3vy=5;
+var hanra3width=170;
+var hanra3height=150;
+var hanra3direction=1;
+var hanra3move=0;
+
+
+var goldboxx=1150;
+var goldboxy=300;
+var goldboxwidth=150;
+var goldboxheight=150;
+var goldboxview=1;
+
+
+var brickmovey=400;
+
+var applefall=0;    
+
+var endtime=0;
+    
+var livestate='L';
+//당근이가 살아 있을 경우 L, 죽으면 D
+
+var hairtalehide;
+var hookhide;
+var carrotinterval;
+var enemyinterval; 
+var suk1interval;
+var suk2interval;
+var carrotdieinterval;
+var cloudinterval;
+var brickinterval;
+var drawinterval;
+    
+function init()
+{
+    ctx=document.getElementById('canvas').getContext('2d');
+
+    drawinterval = setInterval(draw_init,1);
+    
+}
+function drawcarrot()
+{
+    //특정위치에서 점프하면 안보이던 벽돌생김
+    if(carrot.x>600 && carrot.x<700 && carrot.y>200){
+        brickhide=1;
+    }
+  
+    if(livestate=='L'){
+        if(carrot.direction=='R'){
+            ctx.drawImage(carrot_R,carrot.x, carrot.y, carrot.width,  carrot.height);
+        }
+            else
+        ctx.drawImage(carrot_L,carrot.x, carrot.y, carrot.width, carrot.height);
+    }
+    
+    //**********************
+    carrot.x+=carrot.vx;
+    if(stage != 100){
+        carrot.vy +=carrot.gravity;
+        carrot.y +=carrot.vy;
+        if(carrot.y>groundheight && carrot_fall!=true)
+        {
+            carrot.y=groundheight;
+            carrot.vy=0;
+            onGround=true;
+        }
+    }
+        
+    
+    
+    
+    switch(stage){
+    case 1:
+            
+
+  
+            
+    
+            
+    //벽돌위에 오르기
+    if(carrot.x>=300&& carrot.x<410 && carrot.y>140)
+    {
+        carrot.x=300;
+    } 
+    else if(carrot.x>300 && carrot.x<=420 && carrot.y>140)
+    {
+        carrot.x=420;
+    }
+    else if(carrot.x>300 && carrot.x<400 && carrot.y<140){
+        groundheight=135;
+    }
+
+    else if(carrot.x>=500&& carrot.x<610 && carrot.y>140)
+    {
+        carrot.x=500;
+    } 
+    else if(carrot.x>500 && carrot.x<=620 && carrot.y>140)
+    {
+        carrot.x=620;
+    }
+    else if(carrot.x>500 && carrot.x<600 && carrot.y<140)
+        groundheight=135;
+
+    else if(carrot.x>=800&& carrot.x<910 && carrot.y>140)
+    {
+        carrot.x=800;
+    } 
+    else if(carrot.x>800 && carrot.x<=920 && carrot.y>140)
+    {
+        carrot.x=920;
+    }
+    else if(carrot.x>800 && carrot.x<900 && carrot.y<140)
+        groundheight=135;
+
+    else if(carrot.x>750 && carrot.x<799 && carrot.y<140)
+        groundheight=60;
+
+    else
+        groundheight=300;
+    
+             
+    //벽돌로 인한 점프 제어 
+  if(brickhide==1){
+    if(carrot.y>100 && carrot.y<200)
+    {
+        carrot.y=200;
+    } 
+}
+    
+    //절벽 
+  if(carrot.x>740 && carrot.x<850 && carrot.y>250){
+        carrot_fall=true;
+        //carrot.y+=6;
+        if(carrot.y>400){
+            carrot.y-=6;
+            livestate='D';
+            clearInterval(drawinterval);
+            die_carrot();
+        }
+    }
+
+    //구름떨어지는거
+    if(carrot.x>150){
+        cloudfall=1;
+    }
+    //구름떨어지는거 맞는거
+    if(carrot.x+60>cloudx && carrot.x<(cloudx+50) && carrot.y<(cloudy+30) && carrot.y>cloudy){
+        livestate='D';
+        clearInterval(drawinterval);
+        die_carrot();
+        die_cloud();
+    }
+    //적과 부딪혔을 때
+    if(carrot.x>(enemyx-30) && carrot.x<(enemyx+40) && carrot.y< (enemyy+120) && (carrot.y+100)>enemyy){
+        livestate='D';
+        clearInterval(drawinterval);
+        die_carrot();
+    }    
+    //stage win 조건문
+    if(carrot.x>(flagx-30)){
+        stage=2;
+        carrot.x=10;
+        carrot.y=100;
+    }
+
+    break;
+
+    //stage2에서 carrot계속 내려가게 하기
+   
+
+   case 2:
+//절벽
+  if(carrot.x>440 && carrot.x<510 && carrot.y>250){
+        carrot_fall=true;
+        carrot.y+=6;
+        if(carrot.y>440 && carrot.x<500){
+            carrot.y-=6;
+            livestate='D';
+            clearInterval(drawinterval);
+            die_carrot();
+        }
+    
+    }
+    if(carrot.x>500)
+        suksize=1;
+    
+
+    //적과 부딪혔을 
+   if(carrot.x>(suk1x-30) && carrot.x<(suk1x) && carrot.y< (suk1y+120) && (carrot.y+100)>suk1y){
+        livestate='D';
+        clearInterval(drawinterval);
+        die_carrot();
+    }   
+    if(carrot.x>(suk2x-30) && carrot.x<(suk2x) && carrot.y< (suk2y+120) && (carrot.y+100)>suk2y){
+        livestate='D';
+        clearInterval(drawinterval);
+        die_carrot();
+    }   
+    //stage win 조건문
+   if(carrot.x>1200){
+        stage=3;
+        carrot.x=500;
+        carrot.y=200;
+        fireballdirection=1;
+    }
+    
+
+    break;
+
+    case 3:
+
+        
+    
+    
+    //stage win 조건문
+    if(carrot.x<200){
+        stage=4;
+        carrot.x=10;
+        carrot.y=200;
+    }
+    break;
+
+    case 4:
+    if(goldboxview==1)
+        drawgoldbox();
+
+
+    //보물상자 먹기
+if(carrot.x>(goldboxx-30) && carrot.x<(goldboxx) && carrot.y< (goldboxy+120) && (carrot.y+100)>goldboxy){
+        goldboxview=0;
+        bgm3.play();
+          }   
+    //적과의 충돌
+ if(carrot.x>(hanrax-30) && carrot.x<(hanrax+50) && carrot.y< (hanray+120) && (carrot.y+100)>hanray){
+        livestate='D';
+        clearInterval(drawinterval);
+        die_carrot();
+
+    }
+ if(carrot.x>(hanra2x-30) && carrot.x<(hanra2x+50) && carrot.y< (hanra2y+120) && (carrot.y+100)>hanra2y){
+        livestate='D';
+        clearInterval(drawinterval);
+        die_carrot();
+
+    }
+ if(carrot.x>(hanra3x-30) && carrot.x<(hanra3x+50) && carrot.y< (hanra3y+120) && (carrot.y+100)>hanra3y){
+        livestate='D';
+        clearInterval(drawinterval);
+        die_carrot();
+
+    }
+    //출구
+    if(goldboxview==0 && carrot.x<10){
+        stage=5;
+        carrot.x=1100;
+        carrot.y=200;
+    }
+    
+
+ 
+
+    break;
+
+    case 5:
+
+    break;
+
+    case 6:
+    break;
+    }
+    
+}
+    
+function drawenemy(){
+    ctx.drawImage(enemy, enemyx,enemyy,enemywidth,enemyheight);
+
+    if(enemydirection==1){
+        enemyx+=enemyvx;
+        if(enemyx==1200){
+            enemydirection=-1;
+        }
+    }
+    if(enemydirection==-1){
+        enemyx-=enemyvx;
+        if(enemyx==900){
+            enemydirection=1;
+        }
+    }
+}
+
+function drawsuk1(){
+    ctx.drawImage(suk, suk1x,suk1y,suk1width,suk1height);
+
+    if(suk1direction==1){
+        suk1x+=suk1vx;
+        if(suk1x==420){
+            suk1direction=-1;
+        }
+    }
+    if(suk1direction==-1){
+        suk1x-=suk1vx;
+        if(suk1x==100){
+            suk1direction=1;
+        }
+    }
+}
+
+function drawsuk2(){
+    if(suksize==0){
+    ctx.drawImage(suk, suk2x,suk2y,suk2width,suk2height);
+
+    if(suk2direction==1){
+        suk2x+=suk2vx;
+        if(suk2x==1200){
+            suk2direction=-1;
+        }
+    }
+    if(suk2direction==-1){
+        suk2x-=suk2vx;
+        if(suk2x==600){
+            suk2direction=1;
+        }
+    }
+}
+
+if(suksize==1){
+    ctx.drawImage(suk, suk2x,suk2y,suk2width,suk2height);
+     suk2width=200;
+    suk2height=200;
+    
+    if(suk2direction2==1){
+        suk2y-=suk2vy;
+        if(suk2y==110)
+            suk2direction2=0;
+    }
+    if(suk2direction2==0){
+        suk2y+=suk2vy;
+        if(suk2y==350)
+            suk2direction2=1;
+    }
+     if(suk2direction==1){
+        suk2x+=suk2vx;
+        if(suk2x==1200){
+            suk2direction=-1;
+        }
+    }
+    if(suk2direction==-1){
+        suk2x-=suk2vx;
+        if(suk2x==600){
+            suk2direction=1;
+        }
+    }
+
+}
+}
+
+
+
+function drawhairtale(){
+    if(hairtalehide==1){
+        ctx.drawImage(hairtale, (hairtalex), (hairtaley), hairtalewidth, hairtaleheight);
+        ctx.drawImage(hairtale, (hairtalex+200), (hairtaley-200), hairtalewidth, hairtaleheight);
+        ctx.drawImage(hairtale, (hairtalex+400), (hairtaley+100), hairtalewidth, hairtaleheight);
+        ctx.drawImage(hairtale, (hairtalex+800), (hairtaley+100), hairtalewidth, hairtaleheight);
+        ctx.drawImage(hairtale, (hairtalex+500), (hairtaley-100), hairtalewidth, hairtaleheight);
+        hairtalex-=5;
+    }
+}
+function drawhanra(){
+    
+    ctx.drawImage(hanra, hanrax,hanray, hanrawidth,hanraheight);
+    
+    if(carrot.x>150)
+        hanramove=1;
+
+    if(hanramove==1){
+        hanray+=hanravy;
+        fallen.play();
+        bgm.pause();
+    }
+
+    if(hanray==280)
+        hanray-=hanravy;
+    
+}
+
+function drawhanra2(){
+
+    ctx.drawImage(hanra, hanra2x,hanra2y, hanra2width,hanra2height);
+    
+    if(carrot.x>600)
+        hanra2move=1;
+
+    if(hanra2move==1)
+        hanra2y+=hanra2vy;
+
+    if(hanra2y==280)
+        hanra2y-=hanra2vy;
+    
+}
+
+function drawhanra3(){
+    
+    ctx.drawImage(hanra, hanra3x,hanra3y, hanra3width,hanra3height);
+    
+    if(carrot.x>1100)
+        hanra3move=1;
+
+    if(hanra3move==1)
+        hanra3y+=hanra3vy;
+
+    if(hanra3y==280)
+        hanra3y-=hanra3vy;
+    
+}
+    
+
+function drawgoldbox(){
+    
+    ctx.drawImage(goldbox, goldboxx,goldboxy, goldboxwidth,goldboxheight);
+    
+    }
+
+function drawcloud(){
+    ctx.drawImage(cloud, cloudx, cloudy, cloudwidth, cloudheight);
+    if(cloudfall==1){
+        cloudy+=cloudvy;
+    }
+    else{
+        if(clouddirection==1){
+            cloudx+=cloudvx;
+            if(cloudx==300){
+                clouddirection=-1;
+            }
+        }
+        if(clouddirection==-1){
+            cloudx-=cloudvx;
+            if(cloudx==150){
+                clouddirection=1;
+            }
+        }
+    }
+}
+    
+
+
+function drawfireball(){
+
+    if(carrot.x>400&&carrot.y<250)
+        fireballdirection=0;
+    if(fireballdirection==0){
+    ctx.drawImage(fireball,fireballx,firebally,fireballwidth,fireballheight);
+        firebally-=fireballvy;
+      if(carrot.x>(fireballx-50) && carrot.x<(fireballx+40) && carrot.y< (firebally+120) && (carrot.y+100)>firebally){
+        livestate='D';
+        clearInterval(drawinterval);
+        die_carrot();
+    }     
+  }
+
+    
+}
+
+function drawfire(){
+  
+        if(goldboxview==0 && carrot.y<250 && carrot.x<1100)
+            fire1direction=0;
+        if(fire1direction==0&&fire1fallen==0){
+    ctx.drawImage(fireball,fire1x,fire1y,fire1width,fire1height);
+    ctx.drawImage(fireball,560,fire1y,fire1width,fire1height); 
+    ctx.drawImage(fireball,160,fire1y,fire1width,fire1height);
+         
+         fire1y-=fire1vy;
+         if(carrot.x>(fire1x-20) && carrot.x<(fire1x-15) && carrot.y< (fire1y+120) && (carrot.y+100)>fire1y){
+        livestate='D';
+
+        clearInterval(drawinterval);
+        die_carrot();
+     }
+
+   
+}
+    if(fire1y==-350)
+        fire1fallen=1;
+    if(fire1fallen==1){
+    ctx.drawImage(fireball,fire1x+100,fire1y,fire1width,fire1height);
+    ctx.drawImage(fireball,560+100,fire1y,fire1width,fire1height); 
+    ctx.drawImage(fireball,160+100,fire1y,fire1width,fire1height);
+        fire1y+=fire1vy;
+        if(carrot.x>(fire1x+25) && carrot.x<(fire1x+75) && carrot.y< (fire1y) && (carrot.y)>fire1y-20){
+        livestate='D';
+
+        clearInterval(drawinterval);
+        die_carrot();
+        
+    }
+}
+
+
+    
+}
+
+
+   
+    
+function drawbrick(){
+    
+         ctx.drawImage(bricks,400,325,75,75);
+    ctx.drawImage(bricks,400,250,75,75);
+
+    ctx.drawImage(bricks,900,250,75,75);
+    ctx.drawImage(bricks,900,325,75,75);
+    
+    ctx.drawImage(luckybox,825,175,75,75);
+    
+    ctx.drawImage(bricks,600,325,75,75);
+    ctx.drawImage(bricks,600,250,75,75);
+
+if(brickhide==1){
+    ctx.drawImage(bricks,675,175,75,75);
+    ctx.drawImage(bricks,750,175,75,75);    
+}
+    
+}
+function drawflag(){
+    switch(stage){
+        case 1:
+        ctx.drawImage(flag, flagx, flagy, flagwidth, flagheight);
+        break;
+        case 2:
+        ctx.drawImage(flag2, flagx, flagy, flagwidth, flagheight);
+        break;
+        case 3:
+        ctx.drawImage(flag, flagx, flagy, flagwidth, flagheight);
+        break;
+    }
+    
+
+}
+
+function end(){
+    endtime+=1
+    if(endtime==100)
+
+
+        stage=1;
+
+}
+
+function die_carrot(){
+    ctx.drawImage(carrot_die,carrot.x,carrot.y,carrot.width,carrot.height);
+    stage=6;
+    bgm.pause();
+    die.play();
+}
+
+function die_cloud(){
+    ctx.drawImage(cloud_die,cloudx, cloudy, cloudwidth, cloudheight);
+}
+function init_carrot()
+{
+   window.addEventListener('keydown', getkeydown, false);
+   window.addEventListener('keyup', getkeyup, false);
+}
+function getkeydown(event)
+{
+   if(event.keyCode==37)
+   {
+       carrot.direction='L';
+       carrot.vx=-2.5;
+       if(carrot.x<=10)
+           carrot.x=carrot.x;
+   }
+   if(event.keyCode==39)
+   {
+       carrot.direction='R';
+       carrot.vx=2.5;
+       if(carrot.x>=1200)
+           carrot.x=1200;
+   }
+   if(event.keyCode==32){
+        jump.play();
+       if(stage !=100){
+       if(onGround)
+        {
+            carrot.vy=-15;
+            onGround=false;
+        }
+       }
+       else
+           carrot.y-=50;
+
+   }
+}
+function getkeyup(event){
+    if(event.keyCode==32)
+    {
+        if(carrot.vy<-6)
+            carrot.vy=-6;
+    }
+    if(event.keyCode==37)
+    {
+        carrot.direction='L';
+        carrot.vx=0;
+    }
+    if(event.keyCode==39)
+    {
+        carrot.direction='R';
+        carrot.vx=0;
+    }
+    if(event.keyCode==32){
+        carrot.y+=carrot.vy;
+        
+    }
+}
+
+function draw_init()
+{
+    switch(stage){
+
+
+        case 1:
+     
+        drawbackground();
+        drawcarrot();
+        drawenemy();
+        drawbrick();
+        drawflag();
+        drawcloud();
+        drawcloud2();
+        break;
+            
+        case 2:
+        drawbackground();
+        drawsuk1();
+        drawsuk2();
+        drawflag();
+        drawcarrot();
+        drawfireball();
+        
+        
+        break;
+            
+        case 3:
+        drawbackground();
+        drawcarrot();
+        break;
+        case 4:
+        drawbackground();
+        drawcarrot();
+        drawhanra();
+        drawhanra2();
+        drawhanra3();
+        drawfire();
+        
+        break;
+
+        case 5:
+	location.href="../Winter/END.html";
+        break;
+
+           
+            
+    }
+    
+}
+function drawbackground()
+{
+    switch(stage){
+        case 1:
+        ctx.clearRect(0, 0, box.width, box.height);
+        ctx.drawImage(background1, 0, 0, 1300, 400);
+        ctx.drawImage(ground, 0, 400, 820, 100);//ground
+        ctx.drawImage(ground, 900, 400, 600, 100);
+     
+        break;
+        case 2:
+        ctx.clearRect(0, 0, box.width, box.height);
+        ctx.drawImage(background2, 0, 0, 1300, 400);
+        ctx.drawImage(ground, 0, 400, 500, 100);//ground
+         ctx.drawImage(ground, 600, 400, 1000, 100);
+        
+        break;
+
+        case 3:
+        ctx.clearRect(0, 0, box.width, box.height);
+        ctx.drawImage(background3, 0, 0, 1300, 500);
+         ctx.drawImage(ground, 0, 400, 1500, 100);
+         
+       
+        
+        break;
+        case 4:
+        ctx.clearRect(0, 0, box.width, box.height);
+        ctx.drawImage(background4, 0, 0, 1300, 500);
+        ctx.drawImage(ground3, 0, 110, 1500, 400);
+        
+        break;
+        
+        case 5:
+        ctx.clearRect(0, 0, box.width, box.height);
+        ctx.drawImage(background5, 0, 0, 1300, 500);
+        ctx.drawImage(ground, 0, 400, 1500, 100);
+        break; 
+
+        case 6:
+        bgm.pause();
+        ctx.clearRect(0, 0, box.width, box.height);
+        ctx.drawImage(black, 0, 0, 1500, 500);
+        ctx.drawImage(carrot_die,525,150,250,250);
+        break;
+    }
+    
+}
+
+
+
+
+
+</script>
+</head>
+<body onLoad="init();init_carrot();">
+<canvas id="canvas" width="1300" height="500" style="border:solid">
+</canvas>
+</body>
+</html>

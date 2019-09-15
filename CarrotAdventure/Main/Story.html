@@ -1,0 +1,52 @@
+﻿<html>
+    <meta charset="utf-8">
+<head>
+<title>당근이의 모험</title>
+<style>
+</style>
+<script type="text/javascript">
+    
+    
+var mainmenu=new Image();
+mainmenu.src="mainmenu.png";   
+var main = new Audio();
+main.src = "carrotsong.mp3";
+
+function draw_init(){
+    main.play();
+    drawbackground();
+}
+
+function drawbackground(){
+    ctx.drawImage(mainmenu, 400, 0, 500, 600);
+}
+function getkeydown(event)
+{
+    //Enter 치면
+    if(event.keyCode==13){
+        location.href="../Spring/Spring.html";
+    }
+}
+function init()
+{
+    ctx=document.getElementById("canvas").getContext('2d');
+    drawbackground();
+    ctx.font="30px Arial";
+    ctx.fillStyle='orange';
+    ctx.fillText("  당근이의 모험aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", 10, 50);
+    ctx.font="30px Arial";
+    ctx.fillStyle='orange';
+    ctx.fillText("  주의 사항", 1000, 50);
+    //drawinterval = setInterval(draw_init,1);
+}
+function init_keyboard()
+{
+   window.addEventListener('keydown', getkeydown, false);
+}
+</script>
+</head>
+<body onLoad="init();init_keyboard();">
+<canvas id="canvas" width="1300" height="500" style="border:solid">
+</canvas>
+</body>
+</html>

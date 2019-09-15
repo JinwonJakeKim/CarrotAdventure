@@ -1,0 +1,661 @@
+<html>
+    <meta charset="utf-8">
+<head>
+<title>당근이의 모험</title>
+<style>
+</style>
+<script type="text/javascript">
+    
+var stage=2;    
+var gameplay;
+var onGround=false;
+var carrot_fall=false;
+var groundheight=300;
+var ctx;
+var box={
+    width:1300,
+    height:00,
+    x:20,
+    y:20,
+};
+var carrot={
+    x:-20,
+    y:300,
+    width:150,
+    height:150,
+    vx:0,
+    vy:0,
+    gravity:0.5,
+    direction:'R',
+};
+
+//Images
+//stage1
+var carrot_R=new Image();
+carrot_R.src="carrot_R.png";
+var carrot_L=new Image();
+carrot_L.src="carrot_L.png";
+var ground=new Image();
+ground.src="ground.png";
+var seaground=new Image();
+seaground.src="seaground.png";
+var background1=new Image();
+background1.src="summer9.jpg";
+var bricks=new Image();
+bricks.src="bricks.jpg";
+var carrot_die=new Image();
+carrot_die.src="carrot_die.png";
+var cham=new Image();
+cham.src="cham.png";
+var cloud=new Image();
+cloud.src="cloud.png";
+var cloud2=new Image();
+cloud2.src="cloud2.png";
+var cloud_die=new Image();
+cloud_die.src="cloud_die.png";
+var cave = Image();
+cave.src = "cave.png";
+var bridge = Image();
+bridge.src = "bridge.png";
+//stage2
+var background2=new Image();
+background2.src="summer10.jpg";
+var fishcham=new Image();
+fishcham.src="fishcham.png";
+var cave2=new Image();
+cave2.src="cave2.png";
+var carrot_die_crap=new Image();
+carrot_die_crap.src="carrot_die_crap.png";
+var hairtale=new Image();
+hairtale.src="hairtale.png";
+var hook=new Image();
+hook.src="hook.png";
+var background3=new Image();
+var carrot_die_hook=new Image();
+carrot_die_hook.src="carrot_die_hook.png";
+//stage3
+var ground2=new Image();
+ground2.src="ground2.png";
+var background3=new Image();
+background3.src="summer11.jpg";
+var applerain=new Image();
+applerain.src="applerain.png";
+//stage4
+var background4=new Image();
+background4.src="summer1.jpg";
+var watermelon=new Image();
+watermelon.src="water.png";
+//Sounds
+var bgm = new Audio();
+bgm.src = "goldbeach.mp3";
+bgm.controls = false;
+bgm.autoplay = true;
+bgm.loop = true;
+var jump = new Audio();
+jump.src = "jump.mp3";
+var die = new Audio();
+die.src = "die.mp3";
+
+var chamx=700;
+var chamy=300;
+var chamwidth=150;
+var chamheight=150;
+var chamvx=4;
+var chamvy=10;
+var chamdirection=1;
+    
+var fishchamx=200;
+var fishchamy=50;
+var fishchamwidth=150;
+var fishchamheight=150;
+var fishchamvx=2;
+var fishchamvy=4;
+var fishchamdirection=1;
+    
+var brickx;
+var bricky;
+var brickwidth=150;
+var brickheight=50;
+var brickhide=0;
+
+var cloudx=150;
+var cloudy=50;
+var cloudwidth=130;
+var cloudheight=100;
+var cloudvx=1;
+var cloudvy=7;
+var clouddirection=1;
+var cloudfall=0;
+    
+var cloud2x=700;
+var cloud2y=50;
+var cloud2width=400;
+var cloud2height=100;
+var cloud2vx=1;
+var cloud2vy=4;
+var cloud2direction=1;
+
+var cavex = 1100;
+var cavey = 250;
+var cavewidth = 200;
+var caveheight = 200;
+
+var hairtalex=1000;
+var hairtaley=250;
+var hairtalewidth=150;
+var hairtaleheight=50;
+
+var watermelonx=700;
+var watermelony=200;
+var watermelonwidth=200;
+var watermelonheight=200;
+var watermelonvx=4;
+var watermelonvy=10;
+var watermelondirection=1;    
+    
+var hookx=1000;
+var hooky=-200;
+var hookwidth=100;
+var hookheight=250;
+var hookdirection=1;
+
+var brickmovey=400;
+
+var applefall=0;    
+    
+var livestate='L';
+//당근이가 살아 있을 경우 L, 죽으면 D
+
+var hairtalehide;
+var hookhide;
+var carrotinterval;
+var chaminterval; 
+var carrotdieinterval;
+var cloudinterval;
+var brickinterval;
+var drawinterval;
+    
+function init()
+{
+    ctx=document.getElementById('canvas').getContext('2d');
+
+    drawinterval = setInterval(draw_init,1);
+    
+}
+function drawcarrot()
+{
+    if(livestate=='L'){
+        if(carrot.direction=='R'){
+            ctx.drawImage(carrot_R,carrot.x, carrot.y, carrot.width,  carrot.height);
+        }
+            else
+        ctx.drawImage(carrot_L,carrot.x, carrot.y, carrot.width, carrot.height);
+    }
+    
+    //**********************
+    carrot.x+=carrot.vx;
+    if(stage != 2){
+        carrot.vy +=carrot.gravity;
+        carrot.y +=carrot.vy;
+        if(carrot.y>groundheight && carrot_fall!=true)
+        {
+            carrot.y=groundheight;
+            carrot.vy=0;
+            onGround=true;
+        }
+    }
+        
+    
+    
+    
+    switch(stage){
+    case 1:
+            
+    //특정위치에서 점프하면 안보이던 벽돌생김
+    if(carrot.x>200 && carrot.x<300 && carrot.y<200){
+        brickhide=1;
+    }
+  
+            
+            
+            
+    //벽돌위에 오르기
+    if(carrot.x>-20 && carrot.x<140 && carrot.y<300){
+        groundheight=190;
+    }
+    else if(carrot.x>220 && carrot.x<380 && carrot.y<100)
+        groundheight=90;
+    else if(carrot.x>470 && carrot.x<620 && carrot.y<100)
+        groundheight=90;
+    else
+        groundheight=300;
+    
+            
+    //낭떠러지1
+    if(carrot.x>330 && carrot.x<520 && carrot.y>250){
+        carrot_fall=true
+        //carrot.y+=6;
+        if(carrot.y>400){
+            carrot.y-=6;
+            livestate='D';
+            clearInterval(drawinterval);
+            die_carrot();
+        }
+    }
+    //구름떨어지는거
+    if(carrot.x>150){
+        cloudfall=1;
+    }
+    //구름떨어지는거 맞는거
+    if(carrot.x+60>cloudx && carrot.x<(cloudx+50) && carrot.y<(cloudy+30) && carrot.y>cloudy){
+        livestate='D';
+        clearInterval(drawinterval);
+        die_carrot();
+        die_cloud();
+    }
+    //적과 부딪혔을 때
+    if(carrot.x>(chamx-30) && carrot.x<(chamx+40) && carrot.y< (chamy+120) && (carrot.y+100)>chamy){
+        livestate='D';
+        clearInterval(drawinterval);
+        die_carrot();
+    }    
+    //stage win 조건문
+    if(carrot.x>cavex){
+        stage=2;
+        carrot.x=10;
+        carrot.y=100;
+    }
+
+    break;
+    //stage2에서 carrot계속 내려가게 하기
+    case 2:
+    carrot.y+=1;
+            
+    //carrot이 바닥에 닿으면 죽는 것
+    if(carrot.y==380){
+        die_carrot();
+        clearInterval(drawinterval);
+    }
+    //적과 부딪혔을 때
+    if(carrot.x>(fishchamx-70) && carrot.x<(fishchamx+50) && carrot.y < (fishchamy+100) && carrot.y > (fishchamy-50)){
+        livestate='D';
+        clearInterval(drawinterval);
+        die_carrot();
+    }
+    if(carrot.x>(hairtalex-90) && carrot.x<(hairtalex+50) && carrot.y < hairtaley && carrot.y > (hairtaley-100) ||
+    carrot.x>(hairtalex+110) && carrot.x<(hairtalex+160) && carrot.y < hairtaley-200 && carrot.y > (hairtaley-300) ||
+    carrot.x>(hairtalex+310) && carrot.x<(hairtalex+450) && carrot.y < (hairtaley+100) && carrot.y > hairtaley ||
+    carrot.x>(hairtalex+710) && carrot.x<(hairtalex+850) && carrot.y < (hairtaley+100) && carrot.y > hairtaley ||
+    carrot.x>(hairtalex+410) && carrot.x<(hairtalex+550) && carrot.y < (hairtaley-100) && carrot.y > (hairtaley-200)
+      ){
+        livestate='D';
+        clearInterval(drawinterval);
+        die_carrot();
+    }        
+    //게한테 걸렸을 때
+    if(carrot.x>980 && carrot.y>180){
+        livestate='D';
+        clearInterval(drawinterval);
+        drawbackground();
+        drawfishcham();
+        drawcave();
+        die_carrot_crap();
+    }
+    //갑자기 갈치 때가 튀어나옴
+    if(carrot.x>200 && carrot.y>200){
+        hairtalehide=1;
+    }
+    //낚시대
+    if(carrot.x>900){
+        hookhide=1;
+    }
+    //낚시대에 걸렸을 때
+    if(carrot.x > (hookx-100) && carrot.x < (hookx-50) && carrot.y< (hooky+180) && carrot.y > (hooky+100)){
+        livestate='D';
+        clearInterval(drawinterval);
+        drawbackground();
+        drawfishcham();
+        drawcave();
+        die_carrot_hook();
+    }
+    
+    //stage win 조건문
+    if(carrot.x>1120 && carrot.y < 80){
+        stage=3;
+        carrot.x=10;
+        carrot.y=200;
+    }
+    break;
+            
+    case 3:
+    //낭떠러지
+    if(carrot.x>310 && carrot.x<520 && carrot.y>250){
+        carrot_fall=true
+        brickmovey+=5;
+        if(carrot.y>400){
+            carrot.y-=6;
+            livestate='D';
+            clearInterval(drawinterval);
+            die_carrot();
+        }
+    }
+    //stage win 조건문
+    if(carrot.x>900){
+        stage=4;
+        carrot.x=10;
+        carrot.y=200;
+    }
+    break;
+    case 4:
+    
+    break;
+    }
+    
+}
+    
+function drawcham(){
+    ctx.drawImage(cham, chamx,chamy,chamwidth,chamheight);
+
+    if(chamdirection==1){
+        chamx+=chamvx;
+        if(chamx==1000){
+            chamdirection=-1;
+        }
+    }
+    if(chamdirection==-1){
+        chamx-=chamvx;
+        if(chamx==700){
+            chamdirection=1;
+        }
+    }
+}
+function drawhairtale(){
+    if(hairtalehide==1){
+        ctx.drawImage(hairtale, (hairtalex), (hairtaley), hairtalewidth, hairtaleheight);
+        ctx.drawImage(hairtale, (hairtalex+200), (hairtaley-200), hairtalewidth, hairtaleheight);
+        ctx.drawImage(hairtale, (hairtalex+400), (hairtaley+100), hairtalewidth, hairtaleheight);
+        ctx.drawImage(hairtale, (hairtalex+800), (hairtaley+100), hairtalewidth, hairtaleheight);
+        ctx.drawImage(hairtale, (hairtalex+500), (hairtaley-100), hairtalewidth, hairtaleheight);
+        hairtalex-=5;
+    }
+}
+function drawhook(){
+    if(hookhide==1){
+    ctx.drawImage(hook, hookx,hooky, hookwidth,hookheight);
+        if(hookdirection==1){
+            hooky+=2;
+            if(hooky==0){
+                hookdirection=-1;
+            }
+        }
+        if(hookdirection==-1){
+            hooky-=2;
+            if(hooky==-200){
+                hookdirection=1;
+            }
+        }
+    }
+}
+function drawcloud(){
+    ctx.drawImage(cloud, cloudx, cloudy, cloudwidth, cloudheight);
+    if(cloudfall==1){
+        cloudy+=cloudvy;
+    }
+    else{
+        if(clouddirection==1){
+            cloudx+=cloudvx;
+            if(cloudx==300){
+                clouddirection=-1;
+            }
+        }
+        if(clouddirection==-1){
+            cloudx-=cloudvx;
+            if(cloudx==150){
+                clouddirection=1;
+            }
+        }
+    }
+}
+    
+function drawcloud2(){
+    ctx.drawImage(cloud2, cloud2x, cloud2y, cloud2width, cloud2height);
+    
+    if(cloud2direction==1){
+        cloud2x+=cloud2vx;
+        if(cloud2x==900){
+            cloud2direction=-1;
+        }
+    }
+    if(cloud2direction==-1){
+        cloud2x-=cloud2vx;
+        if(cloud2x==600 && stage!=3){
+            cloud2direction=1;
+        }
+        if(cloud2x==100){
+            cloud2direction=1;
+            applefall=1;
+        }
+    }
+}    
+
+
+function drawfishcham(){
+    ctx.drawImage(fishcham,fishchamx,fishchamy,fishchamwidth,fishchamheight);
+  
+
+    if(fishchamdirection==1){
+        fishchamx+=fishchamvx;
+        if(fishchamx==600){
+            fishchamdirection=-1;
+        }
+    }
+    if(fishchamdirection==-1){
+        fishchamx-=fishchamvx;
+        if(fishchamx==150){
+            fishchamdirection=1;
+        }
+    }
+}
+function drawapplerain(){
+    /*if(applefall==1){
+        ctx.drawImage(applerain, )
+    }*/
+}
+function drawwatermelon(){
+    ctx.drawImage(watermelon, watermelonx,watermelony,watermelonwidth,watermelonheight);
+
+    if(watermelondirection==1){
+        watermelonx+=watermelonvx;
+        if(watermelonx==1000){
+            watermelondirection=-1;
+        }
+    }
+    if(watermelondirection==-1){
+        watermelonx-=watermelonvx;
+        if(watermelonx==700){
+            watermelondirection=1;
+        }
+    }
+}    
+    
+function drawbrick(){
+    if(brickhide==1){
+        ctx.drawImage(bricks,60,300,brickwidth, brickheight);
+        ctx.drawImage(bricks,300,200, brickwidth, brickheight);
+        ctx.drawImage(bricks,550,200, brickwidth, brickheight);
+    }
+}
+function drawcave(){
+    switch(stage){
+        case 1:
+        ctx.drawImage(cave, cavex, cavey, cavewidth, caveheight);
+        break;
+        case 2:
+        ctx.drawImage(cave2, 1175, 0, 130, 130);
+        break;
+        case 3:
+        ctx.drawImage(cave, cavex, cavey, cavewidth, caveheight);
+        break;
+    }
+    
+}
+function die_carrot_hook(){
+    ctx.drawImage(carrot_die_hook, hookx,hooky, hookwidth,hookheight);
+    bgm.pause();
+    die.play();
+}
+function die_carrot(){
+    ctx.drawImage(carrot_die,carrot.x,carrot.y,carrot.width,carrot.height);
+    bgm.pause();
+    die.play();
+}
+function die_carrot_crap(){
+    ctx.drawImage(carrot_die_crap,1055,253,200,95);
+    bgm.pause();
+    die.play();
+}
+function die_cloud(){
+    ctx.drawImage(cloud_die,cloudx, cloudy, cloudwidth, cloudheight);
+}
+function init_carrot()
+{
+   window.addEventListener('keydown', getkeydown, false);
+   window.addEventListener('keyup', getkeyup, false);
+}
+function getkeydown(event)
+{
+   if(event.keyCode==37)
+   {
+       carrot.direction='L';
+       carrot.vx=-2.5;
+       if(carrot.x<=10)
+           carrot.x=carrot.x;
+   }
+   if(event.keyCode==39)
+   {
+       carrot.direction='R';
+       carrot.vx=2.5;
+       if(carrot.x>=1200)
+           carrot.x=1200;
+   }
+   if(event.keyCode==32){
+        jump.play();
+       if(stage !=2){
+       if(onGround)
+        {
+            carrot.vy=-12;
+            onGround=false;
+        }
+       }
+       else
+           carrot.y-=50;
+
+   }
+}
+function getkeyup(event){
+    if(event.keyCode==32)
+    {
+        if(carrot.vy<-6)
+            carrot.vy=-6;
+    }
+    if(event.keyCode==37)
+    {
+        carrot.direction='L';
+        carrot.vx=0;
+    }
+    if(event.keyCode==39)
+    {
+        carrot.direction='R';
+        carrot.vx=0;
+    }
+    if(event.keyCode==32 && stage != 2){
+        carrot.y+=carrot.vy;
+        
+    }
+}
+
+function draw_init()
+{
+    switch(stage){
+        case 1:
+        drawbackground();
+        drawcham();
+        drawbrick();
+        drawcave();
+        drawcloud();
+        drawcloud2();
+        drawcarrot();
+        break;
+            
+        case 2:
+        drawbackground();
+        drawfishcham();
+        drawcave();
+        drawcarrot();
+        drawhairtale();
+        drawhook();
+        drawcarrot();
+        
+        break;
+            
+        case 3:
+        drawbackground();
+        drawcave();
+        drawcham();
+        drawcloud2();
+        drawcarrot();
+        break;
+        case 4:
+        drawbackground();
+        drawwatermelon();
+        drawcarrot();
+        break;
+            
+            
+    }
+    
+}
+function drawbackground()
+{
+    switch(stage){
+        case 1:
+        ctx.clearRect(0, 0, box.width, box.height);
+        ctx.drawImage(background1, 0, 0, 1300, 400);
+        ctx.drawImage(ground, 0, 400, 400, 100);//ground
+        ctx.drawImage(ground, 600, 400, 700, 100);
+        ctx.drawImage(bridge, 400, 400, 200, 100);
+        break;
+        case 2:
+        ctx.clearRect(0, 0, box.width, box.height);
+        ctx.drawImage(background2, 0, 0, 1300, 500);
+        break;
+        case 3:
+        ctx.clearRect(0, 0, box.width, box.height);
+        ctx.drawImage(background3, 0, 0, 1300, 500);
+        ctx.drawImage(ground2, 380, brickmovey, 250, 80);
+        ctx.drawImage(ground2, 0, 400, 400, 80);
+        ctx.drawImage(ground2, 600, 400, 700, 80);
+        
+        break;
+        case 4:
+        ctx.clearRect(0, 0, box.width, box.height);
+        ctx.drawImage(background4, 0, 0, 1300, 500);
+        ctx.drawImage(ground2, 0, 400, 400, 100);//ground
+        ctx.drawImage(ground2, 600, 400, 700, 100);
+        break;
+            
+    }
+    
+}
+
+
+
+
+
+</script>
+</head>
+<body onLoad="init();init_carrot();">
+<canvas id="canvas" width="1300" height="500" style="border:solid">
+</canvas>
+</body>
+</html>

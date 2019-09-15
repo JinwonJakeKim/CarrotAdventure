@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript">
+function getkeydown(event)
+{
+    //Enter 치면
+    if(event.keyCode==13){
+        location.href="../Spring/Spring.html";
+    }
+}
+function init_keyboard()
+{
+   window.addEventListener('keydown', getkeydown, false);
+}
+</script>
+</head>
+<body onLoad="init_keyboard();">
+<div align="center">
+  <embed src="story1.mp4" width="1300" height="600" controls="False" loop="True"></embed>
+</div>
+</body>
+</html>

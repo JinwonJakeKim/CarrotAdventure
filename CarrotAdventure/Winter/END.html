@@ -1,0 +1,92 @@
+﻿<html>
+    <meta charset="utf-8">
+<head>
+<title>당근이의 모험</title>
+<style>
+</style>
+<script type="text/javascript">
+var ctx;
+var box={
+    width:1300,
+    height:600,
+    x:20,
+    y:20,
+};
+
+var carrot={
+    x:20,
+    y:300,
+    width:150,
+    height:150,
+    vx:0,
+    vy:0,
+    gravity:0.5,
+    direction:'R',
+};
+
+var background=new Image();
+background.src="winter3.jpg";
+var ground=new Image();
+ground.src="ground.png";
+var apple=new Image();
+apple.src="apple.png";
+var apple2=new Image();
+apple2.src="apple2.png";
+var cham=new Image();
+cham.src="cham.png";
+var pear=new Image();
+pear.src="pear.png";
+var pear2=new Image();
+pear2.src="pear2.png";
+var strawberry=new Image();
+strawberry.src="strawberry.png";
+var suk=new Image();
+suk.src="suk2.png";
+var watermelon=new Image();
+watermelon.src="watermelon.png";
+var carrot=new Image();
+carrot.src="carrot.png";
+var credit=new Image();
+credit.src="credit.png";
+
+var bgm = new Audio();
+bgm.src = "ring.m4a";
+
+var carrotx=100;
+var carrotvx=0.7;
+var credity=600;
+var creditvy=0.5;
+var drawinterval;
+function init(){
+	ctx=document.getElementById('canvas').getContext('2d');
+    setInterval(ending,1);
+}
+
+function ending(){
+
+	bgm.play();
+	ctx.drawImage(background, 0, 0, 1300, 500);
+	ctx.drawImage(apple, 400, 315, 100, 100);
+	ctx.drawImage(cham, 460, 290, 150, 150);
+	ctx.drawImage(pear, 600, 315, 100, 100);
+	ctx.drawImage(pear2, 655, 260, 200, 200);
+	ctx.drawImage(strawberry, 800, 315, 100, 100);
+	ctx.drawImage(suk, 880, 275, 170, 170);
+	ctx.drawImage(watermelon, 1050, 260, 150, 150);
+	ctx.drawImage(carrot, carrotx, 250, 200, 200);
+	ctx.drawImage(ground, 0, 400, 1500, 100);
+
+	ctx.drawImage(credit, 350,credity , 700, 400);
+
+	carrotx+=carrotvx;
+    credity-=creditvy;
+}
+
+
+</script>
+</head>
+<body onLoad="init();">
+<canvas id="canvas" width="1300" height="500" style="border:solid">
+</canvas>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<html>
+    <meta charset="utf-8">
+<head>
+<title>장애물 구현</title>
+<style>
+</style>
+<script type="text/javascript">
+var ctx;
+var boxwidth=1300;
+var boxheight=500;
+var boxx=20;
+var boxy=20;
+    
+var carrot_R=new Image();
+carrot_R.src="carrot_R.png";
+var carrot_L=new Image();
+carrot_L.src="carrot_L.png";
+var ground=new Image();
+ground.src="ground.png";
+var background=new Image();
+background.src="summer1.jpg";
+var bricks=new Image();
+bricks.src="bricks.jpg";
+var carrot_die=new Image();
+carrot_die.src="carrot_die.png";
+var watermelon=new Image();
+watermelon.src="water.png";
+
+var carrotx=10;
+var carroty=300;
+var carrotwidth=200;
+var carrotheight=150;
+var carrotvx=4;
+var carrotvy=120;
+var direction='R';
+//당근이가 오른쪽으로 갈경우 R, 왼쪽으로 갈 경우 L
+    
+var watermelonx=700;
+var watermelony=200;
+var watermelonwidth=200;
+var watermelonheight=200;
+var watermelonvx=4;
+var watermelonvy=10;
+var watermelondirection=1;
+    
+var brick1x=300;
+var brick1y=290;
+var brick1width=200;
+var brick1height=20;
+    
+var groundy=400;
+  
+var livestate='L';
+//당근이가 살아 있을 경우 L, 죽으면 D
+var brickstate='F';
+//당근이가 벽돌 위에 있을 경우 T, 아니면 F
+var carrotinterval;
+var waterinterval; 
+var carrotdieinterval;
+
+function init()
+{
+    ctx=document.getElementById('canvas').getContext('2d');
+    movecarrot();
+    carrotinterval = setInterval(movecarrot,1);
+    movewatermelon();
+    waterinterval = setInterval(movewatermelon,1);
+}
+function movecarrot()
+{
+    ctx.clearRect(boxx, boxy, boxwidth, boxheight);
+    ctx.drawImage(ground, 0, 400, 300, 100);//ground
+    ctx.drawImage(ground, 500, 400, 300, 100);
+    ctx.drawImage(background, 0, 0, 1300, 400);
+    
+    ctx.drawImage(bricks, brick1x, brick1y, brick1width, brick1height);
+    
+    //안보이는 bricks 함정
+    if(carrotx>500 && carrotx<700 && carroty<300){
+        livestate='D';
+        ctx.drawImage(bricks,600,200,200,100); 
+        clearInterval(carrotinterval);
+        clearInterval(waterinterval);
+        die_carrot();
+    }
+    //땅이 갑자기 꺼지는 함정
+    if(carrotx<800)
+    ctx.drawImage(ground,800,400,500,100);
+    else{
+        ctx.drawImage(ground,800,groundy,500,100);
+        groundy+=8;
+        carroty+=4;
+    }
+    //낭떠러지1
+    if(carrotx>200 && carrotx<400){
+        if(carroty<brick1y)
+            brickstate='T';
+        //벽위에 올라갈경우 brickstate가 T로 바뀜
+        else 
+            carroty+=4;
+    }
+    //brick1내려옴
+    if(carrotx>400 && carrotx<405){
+        carroty=300;
+        brickstate='F';
+    }
+    
+    
+    if(livestate=='L'){
+        if(direction=='R'){
+            ctx.drawImage(carrot_R,carrotx, carroty, carrotwidth,  carrotheight);
+        }
+            else
+        ctx.drawImage(carrot_L,carrotx, carroty, carrotwidth, carrotheight);
+    }
+    }
+    
+    
+function die_carrot(){
+ ctx.drawImage(carrot_die,carrotx,carroty,carrotwidth,carrotheight);
+}
+function init_carrot()
+{
+   window.addEventListener('keydown', getkeydown, false);
+   window.addEventListener('keyup', getkeyup, false);
+}
+function getkeydown(event)
+{
+   if(event.keyCode==37)
+   {
+       direction='L';
+   carrotx-=carrotvx;
+   if(carrotx<=10)
+   carrotx=carrotx;
+   }
+   if(event.keyCode==39)
+   {
+       direction='R';
+   carrotx+=carrotvx;
+   if(carrotx>=1200)
+   carrotx=1200;
+   }
+   if(event.keyCode==32){
+       carroty-=carrotvy;
+   }
+}
+    
+function getkeyup(event){
+    if(event.keyCode==32){
+        if(brickstate=='T'){
+            carroty=carroty;
+        }
+        else
+            carroty+=carrotvy;
+    }
+}
+function jumpup(){
+    carroty-=carrotvy;
+}
+function movewatermelon(){
+    ctx.drawImage(watermelon, watermelonx,watermelony,watermelonwidth,watermelonheight);
+
+    if(watermelondirection==1){
+        watermelonx+=watermelonvx;
+        if(watermelonx==1000){
+            watermelondirection=-1;
+        }
+    }
+    if(watermelondirection==-1){
+        watermelonx-=watermelonvx;
+        if(watermelonx==700){
+            watermelondirection=1;
+        }
+    }
+}
+</script>
+</head>
+<body onLoad="init();init_carrot();">
+<canvas id="canvas" width="1300" height="500" style="border:solid">
+</canvas>
+</body>
+</html>
